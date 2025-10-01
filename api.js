@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const BASE_URL = 'http://localhost:5000/api'; // backend-mu
+export const BASE_URL = 'http://5.231.31.30:5000/api'; // backend-mu
 
 export const loginUser = async (email, password) => {
   try {
