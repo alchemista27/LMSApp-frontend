@@ -1,5 +1,6 @@
+// screens/DashboardScreen.js
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import CourseItem from "../components/CourseItem";
 import { getCourses } from "../api";
 
@@ -7,15 +8,28 @@ export default function DashboardScreen({ navigation }) {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    getCourses().then(setCourses);
+    const fetch = async () => {
+      const data = await getCourses();
+      setCourses(data);
+    };
+    fetch();
   }, []);
 
   return (
-    <ScrollView className="flex-1 bg-secondary p-2">
-      {courses.map((course) => (
-        <CourseItem key={course.id} course={course} onPress={() => navigation.navigate("CourseDetail", { courseId: course.id })}/>
-      ))}
-      {courses.length === 0 && <Text className="text-graycustom text-center mt-4">Tidak ada course</Text>}
-    </ScrollView>
+    <View className="flex-1 bg-dark p-4">
+      <Text className="text-white text-2xl font-bold mb-4">Daftar Course</Text>
+      <FlatList
+        data={courses}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <CourseItem
+            course={item}
+            onPress={() =>
+              navigation.navigate("CourseDetail", { courseId: item.id })
+            }
+          />
+        )}
+      />
+    </View>
   );
 }

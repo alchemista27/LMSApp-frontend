@@ -1,7 +1,9 @@
+// navigation/AppNavigator.js
 import React, { useContext } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator, DrawerContentScrollView } from "@react-navigation/drawer";
 import { AuthContext } from "../context/AuthContext";
 
 import DashboardScreen from "../screens/DashboardScreen";
@@ -9,43 +11,91 @@ import CourseDetailScreen from "../screens/CourseDetailScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import EnrolledCoursesScreen from "../screens/EnrolledCoursesScreen";
+import EnrolledCourseScreen from "../screens/EnrolledCourseScreen";
 import CreateCourseScreen from "../screens/CreateCourseScreen";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function CustomDrawer({ navigation }) {
   const { user, logout } = useContext(AuthContext);
 
+  const drawerItemStyle = "py-3 px-4 rounded-lg mb-1"; // Tailwind padding & border
+  const drawerTextStyle = "text-white text-base";
+
   return (
-    <DrawerContentScrollView>
+    <ScrollView className="bg-gray-900 flex-1 p-4">
       {user ? (
-        <>
-          <DrawerItem label="Dashboard" onPress={() => navigation.navigate("Dashboard")} />
-          <DrawerItem label="Profile" onPress={() => navigation.navigate("Profile")} />
-          <DrawerItem label="Enrolled Courses" onPress={() => navigation.navigate("EnrolledCourses")} />
+        <View>
+          <Text className="text-tosca-400 text-xl font-bold mb-4">Menu</Text>
+
+          <TouchableOpacity
+            className={drawerItemStyle + " bg-gray-800"}
+            onPress={() => navigation.navigate("Dashboard")}
+          >
+            <Text className={drawerTextStyle}>Dashboard</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className={drawerItemStyle + " bg-gray-800"}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <Text className={drawerTextStyle}>Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className={drawerItemStyle + " bg-gray-800"}
+            onPress={() => navigation.navigate("EnrolledCourses")}
+          >
+            <Text className={drawerTextStyle}>Enrolled Courses</Text>
+          </TouchableOpacity>
+
           {user.role === "admin" && (
-            <DrawerItem label="Create Course" onPress={() => navigation.navigate("CreateCourse")} />
+            <TouchableOpacity
+              className={drawerItemStyle + " bg-gray-800"}
+              onPress={() => navigation.navigate("CreateCourse")}
+            >
+              <Text className={drawerTextStyle}>Create Course</Text>
+            </TouchableOpacity>
           )}
-          <DrawerItem label="Logout" onPress={logout} />
-        </>
+
+          <TouchableOpacity
+            className={drawerItemStyle + " bg-red-600"}
+            onPress={logout}
+          >
+            <Text className={drawerTextStyle}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
-        <>
-          <DrawerItem label="Login" onPress={() => navigation.navigate("Login")} />
-          <DrawerItem label="Register" onPress={() => navigation.navigate("Register")} />
-        </>
+        <View>
+          <TouchableOpacity
+            className={drawerItemStyle + " bg-gray-800"}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text className={drawerTextStyle}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className={drawerItemStyle + " bg-gray-800"}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text className={drawerTextStyle}>Register</Text>
+          </TouchableOpacity>
+        </View>
       )}
-    </DrawerContentScrollView>
+    </ScrollView>
   );
 }
 
 function DrawerNavigator() {
   return (
-    <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
+    <Drawer.Navigator
+      screenOptions={{ headerShown: false }}
+      drawerContent={(props) => <CustomDrawer {...props} />}
+    >
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
-      <Drawer.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} />
+      <Drawer.Screen name="EnrolledCourses" component={EnrolledCourseScreen} />
       <Drawer.Screen name="CreateCourse" component={CreateCourseScreen} />
     </Drawer.Navigator>
   );
