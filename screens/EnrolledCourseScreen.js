@@ -1,30 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ScrollView } from "react-native";
-import { AuthContext } from "../context/AuthContext";
-import { getCourses } from "../api";
+import React, { useEffect, useState, useContext } from "react";
+import { ScrollView, Text } from "react-native";
 import CourseItem from "../components/CourseItem";
+import { getEnrolledCourses } from "../api";
+import { AuthContext } from "../context/AuthContext";
 
 export default function EnrolledCoursesScreen({ navigation }) {
-  const { user, token } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    async function fetchEnrolled() {
-      const data = await getCourses(user.id, "user", token);
-      setCourses(data);
-    }
-    fetchEnrolled();
-  }, []);
+    getEnrolledCourses(token).then(setCourses);
+  }, [token]);
 
   return (
-    <ScrollView className="bg-gray-900 p-4">
-      {courses.map(course => (
-        <CourseItem
-          key={course.id}
-          course={course}
-          onPress={() => navigation.navigate("CourseDetail", { courseId: course.id })}
-        />
+    <ScrollView className="flex-1 bg-secondary p-2">
+      {courses.map((c) => (
+        <CourseItem key={c.id} course={c} onPress={() => navigation.navigate("CourseDetail", { courseId: c.id })}/>
       ))}
+      {courses.length === 0 && <Text className="text-graycustom text-center mt-4">Belum ada course</Text>}
     </ScrollView>
   );
 }

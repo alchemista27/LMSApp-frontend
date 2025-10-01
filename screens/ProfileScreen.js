@@ -6,11 +6,11 @@ export default function ProfileScreen() {
   const { user } = useContext(AuthContext);
 
   return (
-    <View className="flex-1 bg-gray-900 p-4">
-      <Text className="text-white text-2xl font-bold mb-2">Profile</Text>
-      <Text className="text-gray-300 mb-1">Name: {user.firstname} {user.lastname}</Text>
-      <Text className="text-gray-300 mb-1">Email: {user.email}</Text>
-      <Text className="text-gray-300 mb-1">Role: {user.role}</Text>
+    <View className="flex-1 bg-secondary p-4">
+      <Text className="text-white text-xl mb-2">Profil</Text>
+      <Text className="text-graycustom">Nama: {user.firstname} {user.lastname}</Text>
+      <Text className="text-graycustom">Email: {user.email}</Text>
+      <Text className="text-graycustom">Role: {user.role}</Text>
     </View>
   );
 }

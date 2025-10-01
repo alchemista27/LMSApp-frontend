@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import axios from "axios";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { registerUser } from "../api";
 
 export default function RegisterScreen({ navigation }) {
   const [firstname, setFirstname] = useState("");
@@ -9,25 +9,21 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
-        firstname, lastname, email, password
-      });
-      Alert.alert("Success", res.data.message);
+    const res = await registerUser(firstname, lastname, email, password);
+    if (res?.user) {
+      alert("Register berhasil, silakan login");
       navigation.navigate("Login");
-    } catch (err) {
-      Alert.alert("Error", err.response?.data?.message || err.message);
-    }
+    } else alert(res?.message || "Register gagal");
   };
 
   return (
-    <View className="flex-1 justify-center items-center bg-gray-900 p-4">
-      <Text className="text-white text-3xl font-bold mb-6">Register</Text>
-      <TextInput placeholder="First Name" placeholderTextColor="#aaa" value={firstname} onChangeText={setFirstname} className="w-full p-3 mb-2 bg-gray-800 text-white rounded" />
-      <TextInput placeholder="Last Name" placeholderTextColor="#aaa" value={lastname} onChangeText={setLastname} className="w-full p-3 mb-2 bg-gray-800 text-white rounded" />
-      <TextInput placeholder="Email" placeholderTextColor="#aaa" value={email} onChangeText={setEmail} className="w-full p-3 mb-2 bg-gray-800 text-white rounded" />
-      <TextInput placeholder="Password" placeholderTextColor="#aaa" value={password} onChangeText={setPassword} secureTextEntry className="w-full p-3 mb-4 bg-gray-800 text-white rounded" />
-      <TouchableOpacity onPress={handleRegister} className="w-full bg-teal-600 p-3 rounded">
+    <View className="flex-1 justify-center p-6 bg-secondary">
+      <Text className="text-white text-3xl mb-4">Register</Text>
+      <TextInput placeholder="Firstname" value={firstname} onChangeText={setFirstname} className="bg-graycustom p-2 rounded mb-2"/>
+      <TextInput placeholder="Lastname" value={lastname} onChangeText={setLastname} className="bg-graycustom p-2 rounded mb-2"/>
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} className="bg-graycustom p-2 rounded mb-2"/>
+      <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry className="bg-graycustom p-2 rounded mb-4"/>
+      <TouchableOpacity onPress={handleRegister} className="bg-primary p-3 rounded mb-2">
         <Text className="text-white text-center font-bold">Register</Text>
       </TouchableOpacity>
     </View>
