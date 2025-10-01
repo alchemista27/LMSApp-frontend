@@ -1,19 +1,35 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./App.js",
-    "./screens/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}",
-    "./navigation/**/*.{js,jsx,ts,tsx}"
-  ],
+  content: ["./App.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        primary: '#1abc9c',    // Tosca
-        dark: '#2c3e50',       // hitam gelap
-        graycustom: '#bdc3c7', // abu-abu
+        primary: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+        },
+        success: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          500: '#10b981',
+          600: '#059669',
+        },
+        warning: {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          500: '#f59e0b',
+          600: '#d97706',
+        },
+        error: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          500: '#ef4444',
+          600: '#dc2626',
+        },
       },
     },
   },
   plugins: [],
-};
+}

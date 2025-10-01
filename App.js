@@ -1,17 +1,24 @@
-import 'react-native-gesture-handler';
-import 'react-native-reanimated';
-import React from "react";
-import { AuthProvider } from "./context/AuthContext";
-import AppNavigator from "./navigation/AppNavigator";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+// App.js
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider } from './src/context/AuthContext';
+import AppNavigator from './src/navigation/AppNavigator';
+// Update App.js to include EnrollmentProvider
+import { EnrollmentProvider } from './src/context/EnrollmentContext';
+import { ProgressProvider } from './src/context/ProgressContext';
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <StatusBar style="dark" />
-        <AppNavigator />
+        <EnrollmentProvider>
+          <ProgressProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </ProgressProvider>
+        </EnrollmentProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

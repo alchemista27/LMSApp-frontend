@@ -1,0 +1,76 @@
+// src/context/EnrollmentContext.js
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import EnrollmentService from '../services/enrollmentService';
+import { useAuth } from './AuthContext';
+
+const EnrollmentContext = createContext();
+
+export const useEnrollment = () => useContext(EnrollmentContext);
+
+export const EnrollmentProvider = ({ children }) => {
+  const [enrollments, setEnrollments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+
+  const loadEnrollments = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const result = await EnrollmentService.getMyEnrollments();
+      if (result.success) {
+        setEnrollments(result.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to load enrollments:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const enrollInCourse = async (courseId) => {
+    try {
+      const result = await EnrollmentService.enrollInCourse(courseId);
+      if (result.success) {
+        // Reload enrollments to include the new one
+        await loadEnrollments();
+        return { success: true, message: result.message };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Enrollment failed' };
+    }
+  };
+
+  const isEnrolled = (courseId) => {
+    return enrollments.some(enrollment => enrollment.id === courseId);
+  };
+
+  const getEnrolledCourse = (courseId) => {
+    return enrollments.find(enrollment => enrollment.id === courseId);
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadEnrollments();
+    } else {
+      setEnrollments([]);
+    }
+  }, [user]);
+
+  const value = {
+    enrollments,
+    loading,
+    enrollInCourse,
+    isEnrolled,
+    getEnrolledCourse,
+    refreshEnrollments: loadEnrollments
+  };
+
+  return (
+    <EnrollmentContext.Provider value={value}>
+      {children}
+    </EnrollmentContext.Provider>
+  );
+};
