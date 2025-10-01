@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useContext } from "react";
-import { ScrollView, View, Text } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { ScrollView } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { getCourses } from "../api";
 import CourseItem from "../components/CourseItem";
 
-export default function DashboardScreen({ navigation }) {
+export default function EnrolledCoursesScreen({ navigation }) {
   const { user, token } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    async function fetchCourses() {
-      const data = await getCourses(user.id, user.role, token);
+    async function fetchEnrolled() {
+      const data = await getCourses(user.id, "user", token);
       setCourses(data);
     }
-    fetchCourses();
+    fetchEnrolled();
   }, []);
 
   return (

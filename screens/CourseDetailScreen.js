@@ -1,49 +1,56 @@
-// screens/CourseDetailScreen.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, SafeAreaView, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { getCourseDetail } from '../api';
+import React, { useEffect, useState, useContext } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { AuthContext } from "../context/AuthContext";
+import { getCourseDetail, enrollCourse } from "../api";
+import { Video } from "expo-av";
+import { WebView } from "react-native-webview";
 
-export default function CourseDetailScreen({ courseId, onBack }) {
+export default function CourseDetailScreen({ route }) {
+  const { courseId } = route.params;
+  const { token } = useContext(AuthContext);
   const [course, setCourse] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCourseDetail();
+    async function fetchDetail() {
+      const data = await getCourseDetail(courseId, token);
+      setCourse(data);
+    }
+    fetchDetail();
   }, []);
 
-  const fetchCourseDetail = async () => {
-    setLoading(true);
-    const data = await getCourseDetail(courseId);
-    setCourse(data);
-    setLoading(false);
+  const handleEnroll = async () => {
+    try {
+      await enrollCourse(courseId, token);
+      Alert.alert("Success", "You are now enrolled!");
+    } catch (err) {
+      Alert.alert("Error", err.response?.data?.message || err.message);
+    }
   };
 
-  if (loading) return <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 50 }} />;
-
-  if (!course) return <Text>Course tidak ditemukan!</Text>;
+  if (!course) return <Text className="text-white p-4">Loading...</Text>;
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 20, backgroundColor: '#f5f5f5' }}>
-      <Button title="Back" onPress={onBack} />
-      <ScrollView style={{ marginTop: 20 }}>
-        <Text style={styles.title}>{course.name}</Text>
-        <Text style={styles.description}>{course.description}</Text>
-        {course.sections && course.sections.map((s) => (
-          <View key={s.id} style={styles.section}>
-            <Text style={styles.sectionTitle}>{s.name}</Text>
-            {s.materials && s.materials.map((m) => (
-              <Text key={m.id}>- {m.title}</Text>
-            ))}
-          </View>
-        ))}
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView className="bg-gray-900 p-4">
+      <Text className="text-white text-2xl font-bold mb-2">{course.title}</Text>
+      <Text className="text-gray-300 mb-4">{course.description}</Text>
+
+      {course.materials?.map((mat, idx) => (
+        <View key={idx} className="mb-4">
+          {mat.type === "video" ? (
+            <Video
+              source={{ uri: mat.url }}
+              useNativeControls
+              style={{ width: "100%", height: 200 }}
+            />
+          ) : (
+            <WebView source={{ uri: mat.url }} style={{ height: 400 }} />
+          )}
+        </View>
+      ))}
+
+      <TouchableOpacity onPress={handleEnroll} className="bg-teal-600 p-3 rounded mt-4">
+        <Text className="text-white font-bold text-center">Enroll</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-  description: { marginBottom: 20 },
-  section: { marginBottom: 15 },
-  sectionTitle: { fontWeight: 'bold', fontSize: 18 },
-});

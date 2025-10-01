@@ -1,38 +1,26 @@
-import axios from 'axios';
+import axios from "axios";
 
-export const BASE_URL = 'http://localhost:5000'; // backend-mu
+export const BASE_URL = "http://localhost:5000/api";
 
 export const loginUser = async (email, password) => {
-  try {
-    const res = await axios.post(`${BASE_URL}/api/auth/login`, { email, password });
-    return res.data; // { id, username, role, token }
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+  const res = await axios.post(`${BASE_URL}/auth/login`, { email, password });
+  return res.data;
 };
 
-export const getCourses = async (userId, role) => {
-  try {
-    if (role === 'admin') {
-      const res = await axios.get(`${BASE_URL}/api/courses`);
-      return res.data;
-    } else {
-      const res = await axios.get(`${BASE_URL}/api/enrolled_course?userId=${userId}`);
-      return res.data;
-    }
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
+export const getCourses = async (userId, role, token) => {
+  const url = role === "admin" ? `${BASE_URL}/courses` : `${BASE_URL}/enrolled_course?userId=${userId}`;
+  const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
+  return res.data;
 };
 
-export const getCourseDetail = async (courseId) => {
-  try {
-    const res = await axios.get(`${BASE_URL}/api/course/${courseId}`);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+export const getCourseDetail = async (courseId, token) => {
+  const res = await axios.get(`${BASE_URL}/courses/${courseId}`, { headers: { Authorization: `Bearer ${token}` } });
+  return res.data;
+};
+
+export const enrollCourse = async (courseId, token) => {
+  const res = await axios.post(`${BASE_URL}/enrolled_course`, { courseId }, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
 };
