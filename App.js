@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// App.js
+import React, { useState } from 'react';
+import LoginScreen from './screens/LoginScreen';
+import DashboardScreen from './screens/DashboardScreen';
+import CourseDetailScreen from './screens/CourseDetailScreen';
 
 export default function App() {
+  const [user, setUser] = useState(null);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+
+  if (!user) {
+    return <LoginScreen onLogin={setUser} />;
+  }
+
+  if (selectedCourseId) {
+    return <CourseDetailScreen courseId={selectedCourseId} onBack={() => setSelectedCourseId(null)} />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <DashboardScreen
+      user={user}
+      onLogout={() => setUser(null)}
+      onSelectCourse={(course) => setSelectedCourseId(course.id)}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
