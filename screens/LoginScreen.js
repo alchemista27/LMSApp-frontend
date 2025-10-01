@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { loginUser } from "../api";
 import { AuthContext } from "../context/AuthContext";
 
 export default function LoginScreen({ navigation }) {
@@ -7,38 +8,46 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  return (
-    <View className="flex-1 justify-center bg-dark px-6">
-      <Text className="text-3xl font-bold text-primary mb-8">Login</Text>
+  const handleLogin = async () => {
+    const res = await loginUser(email, password);
+    if (res?.token) {
+      await login(email, password); // simpan user ke context
+    } else {
+      Alert.alert("Login gagal", res?.message || "Email atau password salah");
+    }
+  };
 
-      <Text className="text-light mb-2">Email</Text>
+  return (
+    <View style={{ flex: 1, justifyContent: "center", padding: 16, backgroundColor: "#111" }}>
+      <Text style={{ color: "#fff", fontSize: 24, textAlign: "center", marginBottom: 20 }}>Login</Text>
+
       <TextInput
-        className="bg-gray-700 text-white p-3 rounded mb-4"
+        placeholder="Email"
+        placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
-        placeholder="Email"
-        placeholderTextColor="#aaa"
+        autoCapitalize="none"
+        style={{ backgroundColor: "#222", color: "#fff", padding: 12, borderRadius: 8, marginBottom: 12 }}
       />
 
-      <Text className="text-light mb-2">Password</Text>
       <TextInput
-        className="bg-gray-700 text-white p-3 rounded mb-4"
+        placeholder="Password"
+        placeholderTextColor="#888"
         value={password}
         onChangeText={setPassword}
-        placeholder="Password"
         secureTextEntry
-        placeholderTextColor="#aaa"
+        style={{ backgroundColor: "#222", color: "#fff", padding: 12, borderRadius: 8, marginBottom: 12 }}
       />
 
       <TouchableOpacity
-        className="bg-primary py-3 rounded mb-4"
-        onPress={() => login(email, password)}
+        style={{ backgroundColor: "#1abc9c", padding: 14, borderRadius: 8 }}
+        onPress={handleLogin}
       >
-        <Text className="text-white text-center font-bold">Login</Text>
+        <Text style={{ color: "#fff", textAlign: "center", fontWeight: "bold" }}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text className="text-light text-center">Belum punya akun? Register</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("Register")} style={{ marginTop: 16 }}>
+        <Text style={{ color: "#1abc9c", textAlign: "center" }}>Belum punya akun? Register</Text>
       </TouchableOpacity>
     </View>
   );

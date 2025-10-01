@@ -1,4 +1,3 @@
-// screens/CourseDetailScreen.js
 import React, { useEffect, useState, useContext } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { getCourseDetail, enrollCourse } from "../api";
@@ -24,12 +23,12 @@ export default function CourseDetailScreen({ route }) {
     if (res) Alert.alert("Success", "Enroll berhasil!");
   };
 
-  if (!course) return <Text className="text-white p-4">Loading...</Text>;
+  if (!course) return <Text style={{ color: '#fff', padding: 16 }}>Loading...</Text>;
 
   return (
-    <ScrollView className="bg-dark p-4">
-      <Text className="text-white text-2xl font-bold mb-2">{course.title}</Text>
-      <Text className="text-graycustom mb-4">{course.description}</Text>
+    <ScrollView style={{ flex: 1, backgroundColor: '#111', padding: 16 }}>
+      <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>{course.title}</Text>
+      <Text style={{ color: '#ccc', marginBottom: 16 }}>{course.description}</Text>
 
       {course.materials?.map((m) => (
         <CourseMaterial key={m.id} material={m} />
@@ -37,10 +36,10 @@ export default function CourseDetailScreen({ route }) {
 
       {user && (
         <TouchableOpacity
-          className="bg-primary py-3 rounded mt-4"
+          style={{ backgroundColor: '#1abc9c', paddingVertical: 12, borderRadius: 8, marginTop: 16 }}
           onPress={handleEnroll}
         >
-          <Text className="text-white text-center font-bold">Enroll</Text>
+          <Text style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>Enroll</Text>
         </TouchableOpacity>
       )}
     </ScrollView>

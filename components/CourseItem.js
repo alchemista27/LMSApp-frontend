@@ -1,15 +1,14 @@
-// components/CourseItem.js
 import React from "react";
 import { TouchableOpacity, Text, View } from "react-native";
 
 export default function CourseItem({ course, onPress }) {
   return (
     <TouchableOpacity
-      className="bg-dark p-4 rounded mb-4"
+      style={{ backgroundColor: '#333', padding: 12, borderRadius: 8, marginBottom: 8 }}
       onPress={onPress}
     >
-      <Text className="text-white font-bold text-lg">{course.title}</Text>
-      <Text className="text-graycustom mt-1">{course.description}</Text>
+      <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{course.title}</Text>
+      <Text style={{ color: '#ccc', marginTop: 4 }}>{course.description}</Text>
     </TouchableOpacity>
   );
 }

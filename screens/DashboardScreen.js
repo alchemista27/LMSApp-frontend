@@ -1,4 +1,3 @@
-// screens/DashboardScreen.js
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import CourseItem from "../components/CourseItem";
@@ -16,17 +15,15 @@ export default function DashboardScreen({ navigation }) {
   }, []);
 
   return (
-    <View className="flex-1 bg-dark p-4">
-      <Text className="text-white text-2xl font-bold mb-4">Daftar Course</Text>
+    <View style={{ flex: 1, backgroundColor: '#111', padding: 16 }}>
+      <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>Daftar Course</Text>
       <FlatList
         data={courses}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <CourseItem
             course={item}
-            onPress={() =>
-              navigation.navigate("CourseDetail", { courseId: item.id })
-            }
+            onPress={() => navigation.navigate("CourseDetail", { courseId: item.id })}
           />
         )}
       />
